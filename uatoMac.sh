@@ -4,9 +4,7 @@ baseip=`echo $ip | cut -d"." -f1-3`
 ifconfig eth0 down
 macchanger -r eth0
 ifconfig eth0 up
-echo $baseip
 baseip+=.0/24
-echo $baseip
 MACS=$(nmap -sP  "$baseip")
 declare -a arr
 while IFS= read -r line
@@ -14,11 +12,9 @@ do
 if [[ ${line:0:1} == "M" ]]
 then
     mac=$(echo $line | cut -d' ' -f 3 | cut -d':' -f 1-3)
-    echo $mac
     arr+=("$mac")
 fi
 done <<< "$MACS"
-declare -p arr
 declare -a arrNums
 finalMac=00:00:00
 finalNum=0
@@ -45,9 +41,7 @@ do
         finalMac="${arr[$i]}"
         fi
 done
-declare -p arrNums
 finalMac+=:00:00:00
-echo $finalMac
 ifconfig eth0 down
 macchanger -m $finalMac eth0
 macchanger -e eth0
