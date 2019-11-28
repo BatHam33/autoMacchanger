@@ -1,9 +1,9 @@
 #!/bin/bash
 ip=$(/sbin/ip -o -4 addr list eth0 | awk '{print $4}' | cut -d/ -f1)
 baseip=`echo $ip | cut -d"." -f1-3`
-#ifconfig eth0 down
-#macchanger -r eth0
-#ifconfig eth0 up
+ifconfig eth0 down
+macchanger -r eth0
+ifconfig eth0 up
 echo $baseip
 baseip+=.0/24
 echo $baseip
@@ -28,21 +28,27 @@ do
     finalNum=0
     for j in "${!arr[@]}"
     do
-        if ["$finalMac"=="${arr[$j]}"]
+        if [[ "$finalMac" == "${arr[$j]}" ]]
         then
             finalNum+=1
         fi
     done
-    arrNums[$i]=finalNum
+    arrNums[$i]=$finalNum
 done
 finalMac=00:00:00
 finalNum=0
 for i in "${!arrNums[@]}"
 do
-    if ["${arrNums[$i]}">"$finalNum"]
+    if [[ "${arrNums[$i]}" -gt "$finalNum" ]]
     then
         finalNum="${arrNums[$i]}"
-        finalMac=arr[$i]
+        finalMac="${arr[$i]}"
         fi
 done
 declare -p arrNums
+finalMac+=:00:00:00
+echo $finalMac
+ifconfig eth0 down
+macchanger -m $finalMac eth0
+macchanger -e eth0
+ifconfig eth0 up
