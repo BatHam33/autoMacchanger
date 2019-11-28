@@ -4,6 +4,7 @@ baseip=`echo $ip | cut -d"." -f1-3`
 ifconfig eth0 down
 macchanger -r eth0
 ifconfig eth0 up
+service network-manager restart
 baseip+=.0/24
 MACS=$(nmap -sP  "$baseip")
 declare -a arr
@@ -46,3 +47,4 @@ ifconfig eth0 down
 macchanger -m $finalMac eth0
 macchanger -e eth0
 ifconfig eth0 up
+service network-manager restart
