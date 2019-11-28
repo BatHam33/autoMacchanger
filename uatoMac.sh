@@ -13,10 +13,36 @@ while IFS= read -r line
 do
 if [[ ${line:0:1} == "M" ]]
 then
-    #echo $line | cut -d' ' -f 3 | cut -d':' -f 1-3
-    mac=$("$line" | cut -d' ' -f 3 | cut -d':' -f 1-3)
+    mac=$(echo $line | cut -d' ' -f 3 | cut -d':' -f 1-3)
+    echo $mac
     arr+=("$mac")
 fi
 done <<< "$MACS"
 declare -p arr
-#echo "$MACS"
+declare -a arrNums
+finalMac=00:00:00
+finalNum=0
+for i in "${!arr[@]}"
+do
+    finalMac="${arr[$i]}"
+    finalNum=0
+    for j in "${!arr[@]}"
+    do
+        if ["$finalMac"=="${arr[$j]}"]
+        then
+            finalNum+=1
+        fi
+    done
+    arrNums[$i]=finalNum
+done
+finalMac=00:00:00
+finalNum=0
+for i in "${!arrNums[@]}"
+do
+    if ["${arrNums[$i]}">"$finalNum"]
+    then
+        finalNum="${arrNums[$i]}"
+        finalMac=arr[$i]
+        fi
+done
+declare -p arrNums
