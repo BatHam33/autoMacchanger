@@ -43,4 +43,3 @@ ifconfig eth0 down
 macchanger -m $finalMac eth0
 macchanger -e eth0
 ifconfig eth0 up
-service network-manager restart
