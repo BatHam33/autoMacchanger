@@ -1,10 +1,6 @@
 #!/bin/bash
 ip=$(/sbin/ip -o -4 addr list eth0 | awk '{print $4}' | cut -d/ -f1)
 baseip=`echo $ip | cut -d"." -f1-3`
-#ifconfig eth0 down
-#macchanger -r eth0
-#ifconfig eth0 up
-#service network-manager restart
 baseip+=.0/24
 MACS=$(nmap -sP  "$baseip")
 declare -a arr
