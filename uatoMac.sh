@@ -1,5 +1,5 @@
 #!/bin/bash
-ip=$(/sbin/ip -o -4 addr list eth0 | awk '{print $4}' | cut -d/ -f1)
+ip=$(/sbin/ip -o -4 addr list wlan0 | awk '{print $4}' | cut -d/ -f1)
 baseip=`echo $ip | cut -d"." -f1-3`
 baseip+=.0/24
 MACS=$(nmap -sP  "$baseip")
@@ -38,8 +38,17 @@ do
         finalMac="${arr[$i]}"
         fi
 done
-finalMac+=:00:00:00
-ifconfig eth0 down
-macchanger -m $finalMac eth0
-macchanger -e eth0
-ifconfig eth0 up
+macEnding=""
+chars=123456789abcdef
+for i in {1..6} ; 
+do
+   newVal=$( echo -n "${chars:RANDOM%${#chars}:1}")
+   macEnding="${macEnding}$newVal"
+done
+final=$(echo $macEnding | sed 's/../&:/g; s/:$//')
+finalMac+= $final
+#ifconfig eth0 down
+#macchanger -m $finalMac eth0
+#macchanger -e eth0
+#ifconfig eth0 up
+echo $finalMac
